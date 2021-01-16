@@ -2,6 +2,7 @@
 aux_source_directory(. SRC_TEST)
 
 file(GLOB GLAD_SOURCE ${CMAKE_SOURCE_DIR}/3rd-party/glad/src/glad.c)
+file(GLOB STB_SOURCE ${CMAKE_SOURCE_DIR}/src/stb.cc)
 
 # Build each source file independently
 foreach(source ${SRC_TEST})
@@ -9,12 +10,12 @@ foreach(source ${SRC_TEST})
     set(obj ${name}.bin)
 
     # target
-    add_executable(${obj} ${source} ${GLAD_SOURCE})
+    add_executable(${obj} ${source} ${GLAD_SOURCE} ${STB_SOURCE})
     target_compile_features(${obj} PRIVATE cxx_std_11)
 
     target_compile_options(${obj} PRIVATE
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:GNU>>:
-        -Wall -Werror -Wno-unused-parameter -Wextra>
+        -Wall -Wno-unused-parameter -Wextra>
         $<$<CONFIG:Debug>: -O0 -g -ggdb>
         $<$<CONFIG:Release>: -O3>
     )
@@ -22,6 +23,7 @@ foreach(source ${SRC_TEST})
     target_include_directories(${obj}
         PRIVATE
             ${CMAKE_SOURCE_DIR}/include
+            ${CMAKE_SOURCE_DIR}/src
             ${CMAKE_SOURCE_DIR}/3rd-party/assimp/include
             ${CMAKE_SOURCE_DIR}/3rd-party/bullet/src
             ${CMAKE_SOURCE_DIR}/3rd-party/glad/include
